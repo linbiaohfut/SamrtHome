@@ -152,4 +152,23 @@ public class Page<T> {
         this.hasNextPage = hasNextPage;
     }
 
+    @Override
+    public String toString() {
+        return "Page{" +
+                "pageNum=" + pageNum +
+                ", pageSize=" + pageSize +
+                ", size=" + size +
+                ", total=" + total +
+                ", pages=" + pages +
+                ", list=" + list +
+                ", firstPage=" + firstPage +
+                ", prePage=" + prePage +
+                ", nextPage=" + nextPage +
+                ", lastPage=" + lastPage +
+                ", isFirstPage=" + isFirstPage +
+                ", isLastPage=" + isLastPage +
+                ", hasPreviousPage=" + hasPreviousPage +
+                ", hasNextPage=" + hasNextPage +
+                '}';
+    }
 }

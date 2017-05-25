@@ -12,7 +12,10 @@
     <artifactId>smarthome-rpc-message</artifactId>
 
     <dependencies>
-
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>smarthome-common-entity</artifactId>
+        </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>smarthome-rabbitmq-model</artifactId>

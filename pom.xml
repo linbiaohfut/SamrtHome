@@ -14,6 +14,18 @@
         <module>smarthome-common-service</module>
         <module>smarthome-rabbitmq-model</module>
         <module>smarthome-rpc-message</module>
+        <module>smarthome-common-entity</module>
+        <module>smarthome-service-message</module>
+        <module>smarthome-rpc-rabbitmq</module>
+        <module>smarthome-service-rabbitmq</module>
+        <module>smarthome-rpc-home</module>
+        <module>smarthome-service-home</module>
+        <module>smarthome-rpc-device</module>
+        <module>smarthome-service-device</module>
+        <module>smarthome-rpc-gateway</module>
+        <module>smarthome-service-gateway</module>
+        <module>smarthome-rpc-lock</module>
+
     </modules>
 
     <properties>
@@ -50,7 +62,7 @@
         <commons-io.version>2.4</commons-io.version>
         <commons-beanutils.version>1.8.3</commons-beanutils.version>
         <guava.version>18.0</guava.version>
-        <pagehelper.version>4.0.1</pagehelper.version>
+        <pagehelper.version>4.1.4</pagehelper.version>
         <joda-time.version>2.7</joda-time.version>
         <quartz.version>2.2.1</quartz.version>
         <spring.version>4.2.3.RELEASE</spring.version>
@@ -63,6 +75,10 @@
         <jar.version>2.4</jar.version>
         <jetty.version>8.1.9.v20130131</jetty.version>
         <rebel-maven-plugin.version>1.1.5</rebel-maven-plugin.version>
+        <cglib.version>3.1</cglib.version>
+        <asm.Version>3.3.1</asm.Version>
+        <asm.util.version>3.3.1</asm.util.version>
+        <ant.version>1.6.2</ant.version>
     </properties>
 
     <dependencyManagement>
@@ -94,77 +110,44 @@
                 <version>${project.version}</version>
             </dependency>
 
+
             <!-- RPC -->
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>weixin-rpc-admin</artifactId>
+                <artifactId>smarthome-rpc-rabbitmq</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>weixin-rpc-log</artifactId>
+                <artifactId>smarthome-rpc-message</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>weixin-rpc-wxtools</artifactId>
+                <artifactId>smarthome-rpc-home</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>weixin-rpc-redis</artifactId>
+                <artifactId>smarthome-rpc-device</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>weixin-rpc-httpclient</artifactId>
+                <artifactId>smarthome-rpc-gateway</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>weixin-rpc-rabbitmq</artifactId>
+                <artifactId>smarthome-service-device</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>weixin-rpc-cart</artifactId>
+                <artifactId>smarthome-rpc-lock</artifactId>
                 <version>${project.version}</version>
             </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>weixin-rpc-item</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>weixin-rpc-system</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>weixin-rpc-user</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>weixin-rpc-message</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>weixin-rpc-order</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>weixin-rpc-comment</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>weixin-rpc-promotion</artifactId>
-                <version>${project.version}</version>
-            </dependency>
+
             <!-- Junit -->
             <dependency>
                 <groupId>junit</groupId>
@@ -476,6 +459,26 @@
                 <version>${mybatis.spring.version}</version>
             </dependency>
             <!-- MyBatis end -->
+            <dependency>
+                <groupId>cglib</groupId>
+                <artifactId>cglib</artifactId>
+                <version>${cglib.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>asm</groupId>
+                <artifactId>asm</artifactId>
+                <version>${asm.Version}</version>
+            </dependency>
+            <dependency>
+                <groupId>asm</groupId>
+                <artifactId>asm-util</artifactId>
+                <version>${asm.util.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>ant</groupId>
+                <artifactId>ant</artifactId>
+                <version>${ant.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
     <build>

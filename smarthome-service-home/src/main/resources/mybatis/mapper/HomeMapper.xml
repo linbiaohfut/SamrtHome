@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.igood.smarthome.service.home.dao.HomeDaoMapper">
+    <sql id="tableName">home</sql>
+    <sql id="columns">
+        h.id,h.name,h.picture,h.remarks,h.create_date,h.update_date
+    </sql>
+    <sql id="insertColumns">
+        id,name,picture,remarks,create_date,update_date,status
+    </sql>
+    <sql id="insertValues">
+        (#{id},#{name},#{picture},#{remarks},#{createDate},#{updateDate},#{status})
+    </sql>
+
+    <sql id="homeIf">
+        <if test="id != null and id != ''">id=#{id},</if>
+        <if test="name != null and name != ''">name=#{name},</if>
+        <if test="picture != null and picture != ''">picture=#{picture},</if>
+        <if test="remarks != null and remarks != ''">remarks=#{remarks},</if>
+        <if test="createDate != null and createDate != ''">create_date=#{createDate},</if>
+        <if test="updateDate != null and updateDate != ''">update_date=#{updateDate},</if>
+        <if test="status != null and status != ''">status=#{status,jdbcType=VARCHAR,typeHandler=org.apache.ibatis.type.EnumOrdinalTypeHandler}</if>
+    </sql>
+
+    <sql id="homeSelector">
+        select
+        <include refid="columns"/>
+        from
+        <include refid="tableName"/> AS h
+    </sql>
+
+    <sql id="homeWhere">
+        <where>
+            <if test="id != null and id != ''">
+                id = #{id}
+            </if>
+
+            <choose>
+                <when test="status != null and status !=''">
+                    AND status = #{status,jdbcType=VARCHAR,typeHandler=org.apache.ibatis.type.EnumOrdinalTypeHandler}
+                </when>
+                <otherwise>
+                    AND status != 'DELETE'
+                </otherwise>
+            </choose>
+        </where>
+    </sql>
+
+    <sql id="homeUpdate">
+        <trim prefix="SET" suffixOverrides=",">
+            <include refid="homeIf"/>
+        </trim>
+    </sql>
+    <sql id="homeWhereUpdate">
+        <where>
+            <if test="id != null and id != ''">
+                id = #{id}
+            </if>
+        </where>
+    </sql>
+
+    <!-- =================================================================== -->
+    <!-- 根据ID获取家庭信息 -->
+    <select id="load" parameterType="Home" resultType="Home">
+        <include refid="homeSelector"/>
+        <include refid="homeWhere"/>
+    </select>
+
+    <!-- 更新 -->
+    <update id="update" parameterType="Home">
+        UPDATE <include refid="tableName"/>
+        <include refid="homeUpdate"/>
+        <include refid="homeWhereUpdate"/>
+    </update>
+
+    <!-- 插入 -->
+    <insert id="save" parameterType="Home">
+        INSERT INTO
+        <include refid="tableName"/>
+        (
+        <include refid="insertColumns"/>
+        )
+        VALUES
+        <include refid="insertValues"/>
+    </insert>
+
+
+    <!--根据用户ID获取该用户拥有的家庭-->
+    <select id="getByUserId" resultType="Home">
+      <include refid="homeSelector"/>
+        LEFT JOIN home_user hu ON (hu.user_id=u.id)
+        LEFT JOIN user u ON (u.id=#{userId})
+    </select>
+</mapper>

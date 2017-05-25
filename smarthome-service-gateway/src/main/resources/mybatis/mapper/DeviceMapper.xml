@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.igood.smarthome.service.device.dao.DeviceDaoMapper">
+    <sql id="tableName">device</sql>
+
+    <resultMap type="Device" id="deviceResultMap">
+        <id property="id" column="id" />
+        <result property="name" column="name" />
+        <result property="picture" column="picture" />
+        <result property="deviceType" column="device_type" typeHandler="com.igood.common.handler.IntEnumTypeHandler" />
+        <result property="softVersion" column="soft_version" />
+        <result property="homeId" column="home_id" />
+        <result property="parentId" column="parent_id" />
+        <result property="connectType" column="connect_type" typeHandler="com.igood.common.handler.IntEnumTypeHandler"/>
+        <result property="remarks" column="remarks" />
+        <result property="createDate" column="create_date" />
+        <result property="updateDate" column="update_date" />
+        <result property="status" column="status" />
+    </resultMap>
+    <sql id="orderby1">
+        ORDER BY create_date DESC
+    </sql>
+    <sql id="orderby">
+    </sql>
+    <sql id="insertColumns">
+        id,name,picture,device_type,serial,soft_version,home_id,parent_id,connect_type,remarks,create_date,update_date,status
+    </sql>
+    <sql id="insertValue">
+        (#{id},#{name},#{picture},#{deviceType,jdbcType=TINYINT,typeHandler=com.igood.common.handler.IntEnumTypeHandler},
+        #{serial},#{softVersion},
+
+        <choose>
+            <when test="homeId != null and homeId != ''">
+                #{homeId},
+            </when >
+            <otherwise>
+                '0',
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="parentId != null and parentId != ''">
+                #{parentId},
+            </when >
+            <otherwise>
+                '0',
+            </otherwise>
+        </choose>
+        #{connectType,jdbcType=TINYINT,typeHandler=com.igood.common.handler.IntEnumTypeHandler},
+        #{remarks},#{createDate},#{updateDate},#{status})
+    </sql>
+
+    <sql id="deviceIf">
+        <if test="id != null and id != ''">id=#{id},</if>
+        <if test="name != null and name != ''">name=#{name},</if>
+        <if test="picture != null and picture != ''">picture=#{picture},</if>
+        <if test="deviceType != null and deviceType != ''">device_type=#{deviceType,jdbcType=TINYINT,typeHandler=com.igood.common.handler.IntEnumTypeHandler},</if>
+        <if test="serial != null and serial != ''">serial=#{serial},</if>
+        <if test="softVersion != null and softVersion != ''">soft_version=#{softVersion},</if>
+        <if test="homeId != null and homeId != ''">home_id=#{homeId},</if>
+        <if test="parentId != null and parentId != ''">parent_id=#{parentId},</if>
+        <if test="connectType != null and connectType != ''">connect_type=#{connectType,jdbcType=TINYINT,typeHandler=com.igood.common.handler.IntEnumTypeHandler},</if>
+        <if test="remarks != null and remarks != ''">remarks=#{remarks},</if>
+        <if test="createDate != null and createDate != ''">create_date=#{createDate},</if>
+        <if test="updateDate != null and updateDate != ''">update_date=#{updateDate},</if>
+        <if test="status != null and status != ''">status=#{status,jdbcType=VARCHAR}</if>
+    </sql>
+
+    <sql id="deviceSelector" >
+        select
+        *
+        from
+        <include refid="tableName"/> AS d
+    </sql>
+
+    <sql id="deviceWhere">
+        <where>
+            <if test="id != null and id != ''">
+                id = #{id}
+            </if>
+            <if test="homeId != null and homeId != ''">
+                home_id = #{homeId}
+            </if>
+            <if test="serial != null and serial != ''">
+                serial = #{serial}
+            </if>
+            <if test="parentId != null and parentId != ''">
+                parent_id = #{parentId}
+            </if>
+            <if test="deviceType != null">
+                device_type = #{deviceType,jdbcType=TINYINT,typeHandler=com.igood.common.handler.IntEnumTypeHandler}
+            </if>
+
+            <choose>
+                <when test="status != null and status !=''">
+                    AND status = #{status}
+                </when>
+                <otherwise>
+                    AND status != 'DELETE'
+                </otherwise>
+            </choose>
+        </where>
+    </sql>
+
+    <sql id="deviceUpdate">
+        <trim prefix="SET" suffixOverrides=",">
+            <include refid="deviceIf"/>
+        </trim>
+    </sql>
+
+    <sql id="deviceWhereUpdate">
+        <where>
+            <if test="id != null and id != ''">
+                id = #{id}
+            </if>
+        </where>
+    </sql>
+
+    <!-- =================================================================== -->
+    <!-- 根据ID获取家庭信息 -->
+    <select id="load" parameterType="Device" resultMap="deviceResultMap">
+        <include refid="deviceSelector"/>
+        <include refid="deviceWhere"/>
+    </select>
+
+    <select id="loadAll" parameterType="Device" resultMap="deviceResultMap">
+        <include refid="deviceSelector"/>
+        <include refid="deviceWhere"/>
+        <include refid="orderby"/>
+    </select>
+
+    <!-- 更新 -->
+    <update id="update" parameterType="Device">
+        UPDATE <include refid="tableName"/>
+        <include refid="deviceUpdate"/>
+        <include refid="deviceWhereUpdate"/>
+    </update>
+
+    <!-- 插入 -->
+    <insert id="save" parameterType="Device">
+        INSERT INTO
+        <include refid="tableName"/>
+        (
+        <include refid="insertColumns"/>
+        )
+        VALUES
+        <include refid="insertValue"/>
+    </insert>
+
+
+
+    <resultMap type="com.igood.smarthome.rpc.device.entity.Device" id="deviceTree">
+        <result column="id" property="id" javaType="java.lang.String" />
+        <result column="name" property="name" javaType="java.lang.String" />
+        <result column="picture" property="picture" javaType="java.lang.String" />
+        <result column="device_type" property="deviceType"  typeHandler="com.igood.common.handler.IntEnumTypeHandler" />
+        <result column="serial" property="serial" javaType="java.lang.String" />
+        <result column="softVersion" property="softVersion" javaType="java.lang.String" />
+        <result column="connect_type" property="connectType"  typeHandler="com.igood.common.handler.IntEnumTypeHandler" />
+        <collection column="id" property="ChildList" ofType="Device" select="selectDeviceChildrenById"/>
+    </resultMap>
+
+    <!-- 根据父id查询子设备 -->
+    <select id="selectDeviceChildrenById" parameterType="String" resultMap="deviceTree">
+        select *
+        from <include refid="tableName"/>
+        where parent_id=#{id}
+        <include refid="orderby"/>
+    </select>
+
+    <!--根据ID获取设备信息并带它拥有的子设备列表信息-->
+    <select id="getDevicewithChildsById" parameterType="String" resultMap="deviceTree">
+        select *
+        from <include refid="tableName"/>
+        where id=#{id}
+        <include refid="orderby"/>
+    </select>
+
+    <!--根据家庭ID该家庭拥有的所有为父节点的的设备列表-->
+    <select id="getParentDevices" resultMap="deviceTree">
+        select *
+        from <include refid="tableName"/>
+        where home_id=#{homeId}
+        <include refid="orderby"/>
+    </select>
+
+    <!--设备与家庭进行绑定-->
+    <!--如果序列号不存在则进行插入操作，如果序列号已存在就修改家庭ID-->
+    <insert id="bindHome" parameterType="Device">
+        INSERT INTO <include refid="tableName"/>
+        (
+        id,serial,home_id,remarks,create_date,update_date,status
+        )
+        VALUES
+        (#{id},#{serial},#{homeId},#{remarks},#{createDate},#{updateDate},#{status})
+        ON DUPLICATE KEY
+        UPDATE `home_id` = #{homeId}
+    </insert>
+    
+</mapper>

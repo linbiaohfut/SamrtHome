@@ -1,5 +1,6 @@
 package com.igood.smarthome.rpc.message.entity;
 
+import com.igood.common.entity.DataEntity;
 import com.igood.smarthome.rabbitmq.enums.MsgType;
 
 import java.util.Date;
@@ -7,7 +8,7 @@ import java.util.Date;
 /**
  * Created by linzhuowei on 2017/5/14.
  */
-public class SmsHistory {
+public class SmsHistory  extends DataEntity<SmsHistory> {
     private String phone;       // 手机号
     private String content;     // 发送的内容
     private int timeout;        // 超时时间

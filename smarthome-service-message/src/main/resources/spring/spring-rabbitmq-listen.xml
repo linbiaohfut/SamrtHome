@@ -1,0 +1,33 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:rabbit="http://www.springframework.org/schema/rabbit"
+       xsi:schemaLocation="http://www.springframework.org/schema/rabbit
+	http://www.springframework.org/schema/rabbit/spring-rabbit-1.4.xsd
+	http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-4.1.xsd">
+
+    <!-- 定义RabbitMQ的连接工厂 -->
+    <rabbit:connection-factory id="connectionFactory"
+                               host="${rabbitmq.host}"
+                               port="${rabbitmq.port}"
+                               username="${rabbitmq.username}"
+                               password="${rabbitmq.password}"
+                               virtual-host="${rabbitmq.vhost}"/>
+    <!-- MQ的管理，包括队列、交换器等 -->
+    <rabbit:admin connection-factory="connectionFactory" />
+
+    <!-- queue 队列声明-->
+    <rabbit:queue name="WEIXIN-QUEUE-SMS-VALIDATE" auto-declare="true"/> <!-- 注册 -->
+    <rabbit:queue name="WEIXIN-QUEUE-SMS-NOTICE" auto-declare="true"/> <!-- 通知 -->
+    <rabbit:queue name="WEIXIN-QUEUE-SMS-ACTIVITY" auto-declare="true"/> <!-- 活动 -->
+
+    <rabbit:listener-container connection-factory="connectionFactory" message-converter="jackson2JsonMessageConverter">
+        <rabbit:listener ref="consumer" method="sendValidate" queue-names="WEIXIN-QUEUE-SMS-VALIDATE"/>
+        <rabbit:listener ref="consumer" method="sendNotice" queue-names="WEIXIN-QUEUE-SMS-NOTICE"/>
+        <rabbit:listener ref="consumer" method="sendActivity" queue-names="WEIXIN-QUEUE-SMS-ACTIVITY"/>
+    </rabbit:listener-container>
+
+    <bean id="consumer" class="com.igood.smarthome.service.message.service.SmsService"/>
+
+    <bean id="jackson2JsonMessageConverter" class="org.springframework.amqp.support.converter.Jackson2JsonMessageConverter"/>
+</beans>
