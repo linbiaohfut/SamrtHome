@@ -15,6 +15,6 @@
 
   <dubbo:provider registry="zk1" protocol="mydubbo"/>
 
-  <dubbo:service interface="com.igood.smarthome.rpc.device.service.RpcDeviceService" ref="deviceService" version="1.0"/>
+  <dubbo:service interface="com.igood.smarthome.rpc.device.service.RpcLockService" ref="lockService" version="1.0"/>
 
 </beans>

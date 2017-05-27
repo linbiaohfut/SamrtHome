@@ -1,7 +1,7 @@
-package com.igood.smarthome.rpc.lock.entity;
+package com.igood.smarthome.rpc.device.entity;
 
 import com.igood.common.entity.DataEntity;
-import com.igood.smarthome.rpc.lock.enums.PasswordType;
+import com.igood.smarthome.rpc.device.enums.PasswordType;
 
 import java.util.Date;
 

@@ -22,9 +22,6 @@
         <module>smarthome-service-home</module>
         <module>smarthome-rpc-device</module>
         <module>smarthome-service-device</module>
-        <module>smarthome-rpc-gateway</module>
-        <module>smarthome-service-gateway</module>
-        <module>smarthome-rpc-lock</module>
 
     </modules>
 
@@ -132,21 +129,8 @@
                 <artifactId>smarthome-rpc-device</artifactId>
                 <version>${project.version}</version>
             </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>smarthome-rpc-gateway</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>smarthome-service-device</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>smarthome-rpc-lock</artifactId>
-                <version>${project.version}</version>
-            </dependency>
+
+
 
             <!-- Junit -->
             <dependency>

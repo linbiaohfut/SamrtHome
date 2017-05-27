@@ -101,7 +101,8 @@ CREATE TABLE `lock_password` (
   `content` varchar(64) DEFAULT NULL COMMENT '设置的开锁密码',
   `start_time` datetime DEFAULT NULL COMMENT '有效开始时间',
   `end_time` datetime DEFAULT NULL COMMENT '有效结束时间',
-  `use_count_max` int(11) DEFAULT -1 COMMENT '最大使用次数 临时密码在使用超过最大次数后就能不能开锁，长期密码最大使用次数为-1',
+  `use_count_max` int(11) DEFAULT -1 COMMENT '最大使用次数 临时密码在使用超过最大次数后就不能开锁，长期密码最大使用次数为-1',
+  `used_count` int(11) DEFAULT 0 COMMENT '已经使用的次数',
   `password_type` tinyint DEFAULT 0 COMMENT '密码类型:0-管理员密码;1-数字类型;2-卡片类型;3-指纹类型',
   `device_id` varchar(64) DEFAULT NULL COMMENT '所属的锁id',
   `remarks` varchar(255) DEFAULT NULL,
@@ -110,3 +111,117 @@ CREATE TABLE `lock_password` (
   `status` varchar(255) DEFAULT NULL,
   UNIQUE KEY `PASSWORD_INDEX` (`index`,`device_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='门锁密码表';
+
+-- -----------------------------------------------------
+-- 电话提醒套餐
+--
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `package`;
+CREATE TABLE `package` (
+  `id` varchar(64) DEFAULT NULL COMMENT '套餐id',
+  `name` varchar(64) DEFAULT NULL COMMENT '套餐名',
+  `description` text DEFAULT NULL COMMENT '电话提醒套餐描述',
+  `remarks` varchar(255) DEFAULT NULL,
+  `create_date` datetime DEFAULT NULL,
+  `update_date` datetime DEFAULT NULL,
+  `status` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='电话提醒套餐';
+INSERT INTO `package` VALUES ('1', '免费赠送', '新用户体验礼包', '--', '2016-11-08 13:50:44', '2016-11-08 13:50:46', 'NORMAL');
+INSERT INTO `package` VALUES ('2', '自定义套餐', '由用户自主选择提醒的条目', '--', '2016-11-08 13:50:44', '2016-11-08 13:50:46', 'NORMAL');
+
+
+
+-- -----------------------------------------------------
+-- 设备-套餐表
+-- 一个设备使用哪一款套餐
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `device_package`;
+CREATE TABLE `device_package` (
+  `id` varchar(64) DEFAULT NULL COMMENT 'id',
+  `device_id` varchar(64) DEFAULT NULL COMMENT '设备id',
+  `package_id` varchar(64) DEFAULT NULL COMMENT '套餐id',
+  `start_time` datetime DEFAULT NULL COMMENT '有效期开始时间',
+  `end_time` datetime DEFAULT NULL COMMENT '有效期结束时间',
+  `remarks` varchar(255) DEFAULT NULL,
+  `create_date` datetime DEFAULT NULL,
+  `update_date` datetime DEFAULT NULL,
+  `status` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='设备-套餐表';
+
+-- -----------------------------------------------------
+-- 电话提醒条目
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `remind_item`;
+CREATE TABLE `remind_item` (
+  `id` varchar(64) DEFAULT NULL COMMENT '条目id',
+  `name` varchar(64) DEFAULT NULL COMMENT '条目名',
+  `description` varchar(255) DEFAULT NULL COMMENT '电话提醒条目描述',
+  `remarks` varchar(255) DEFAULT NULL,
+  `create_date` datetime DEFAULT NULL,
+  `update_date` datetime DEFAULT NULL,
+  `status` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='电话提醒条目';
+
+INSERT INTO `remind_item` VALUES ('0e9ca1860adc4365bd6dc520b0f80d7c', '门铃提醒', '门铃响起时进行电话提醒', '--', '2016-11-08 13:50:44', '2016-11-08 13:50:46', 'NORMAL');
+INSERT INTO `remind_item` VALUES ('0e9ca1860adc4365bd6dc520b0f80e7d', '防盗提醒', '锁孔盖开启时进行电话提醒', '--', '2016-11-08 13:50:44', '2016-11-08 13:50:46', 'NORMAL');
+INSERT INTO `remind_item` VALUES ('0e9ca1860adc4365bd6dc520b0f80f8e', '防劫持提醒', '当使用报警指纹/卡片/数字密码时，向指定号码进行电话提醒', '--', '2016-11-08 13:50:44', '2016-11-08 13:50:46', 'NORMAL');
+
+-- -----------------------------------------------------
+-- 设备套餐详情表
+-- 一个设备使用的套餐详情，一个套餐包含一个或多个提醒条目，比如豪华套餐包含门铃提醒，防盗提醒和防劫持提醒；比如来访套餐只包含门铃提醒
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `device_package_detail`;
+CREATE TABLE `device_package_detail` (
+  `id` varchar(64) DEFAULT NULL COMMENT '套餐详情id',
+  `device_package_id` varchar(64) DEFAULT NULL COMMENT '设备-套餐id',
+  `remind_item_id` varchar(64) DEFAULT NULL COMMENT '提醒条目id',
+  `use_count_max` int(11) DEFAULT -1 COMMENT '最大使用次数 在使用超过最大次数后就不进行电话提醒，长期进行电话提醒则最大使用次数为-1',
+  `price` double(3,2) DEFAULT 0.00  COMMENT '超出最大使用次数后，每条提醒收费价格',
+  `auto_off` TINYINT(4) DEFAULT 0 COMMENT '使用次数等于最大使用次数后是否自动停止使用，这样就能避免超出后收费',
+  `remarks` varchar(255) DEFAULT NULL,
+  `create_date` datetime DEFAULT NULL,
+  `update_date` datetime DEFAULT NULL,
+  `status` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `package_remind_item` (`package_id`,`remind_item_id`)#同一个套餐里不能存在多条相同的提醒条目，
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='套餐详情表';
+
+-- -----------------------------------------------------
+-- 设备每个电话提醒条目使用情况
+-- 一个设备使用的套餐详情，统计这个设备每个电话提醒条目已经使用的次数
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `device_remind_use`;
+CREATE TABLE `device_remind_use` (
+  `id` varchar(64) DEFAULT NULL COMMENT 'id',
+  `device_id` varchar(64) DEFAULT NULL COMMENT '设备id',
+  `remind_item_id` varchar(64) DEFAULT NULL COMMENT '提醒条目id',
+  `used_count` int(11) DEFAULT 0 COMMENT '已经使用的次数',
+  `remarks` varchar(255) DEFAULT NULL,
+  `create_date` datetime DEFAULT NULL,
+  `update_date` datetime DEFAULT NULL,
+  `status` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `device_remind_item` (`device_id`,`remind_item_id`)#同一个设备里不能存在多条相同的提醒条目，
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='设备-提醒条目关系表';
+
+-- -----------------------------------------------------
+-- 设备-电话提醒条目配置详情
+-- 这个设备使用哪个密码时触发某一个提醒条目会向哪个手机号码打电话
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `device_remind_config`;
+CREATE TABLE `device_remind_config` (
+  `id` varchar(64) DEFAULT NULL COMMENT 'id',
+  `device_id` varchar(64) DEFAULT NULL COMMENT '设备id',
+  `remind_item_id` varchar(64) DEFAULT NULL COMMENT '提醒条目id',
+  `remind_phone` varchar(12) DEFAULT NULL COMMENT '向哪些手机号码打电话提醒',
+  `password_id` varchar(64) DEFAULT NULL COMMENT '使用哪些密码时会触发电话提醒',
+  `threshold_value` int(11) DEFAULT 0 COMMENT '阈值，当设备某个值超过threshold_value阈值时触发提醒',
+  `remarks` varchar(255) DEFAULT NULL,
+  `create_date` datetime DEFAULT NULL,
+  `update_date` datetime DEFAULT NULL,
+  `status` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='设备-电话提醒条目配置详情表';

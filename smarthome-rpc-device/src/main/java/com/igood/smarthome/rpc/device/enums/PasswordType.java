@@ -1,11 +1,11 @@
-package com.igood.smarthome.rpc.lock.enums;
+package com.igood.smarthome.rpc.device.enums;
 
 import com.igood.common.entity.enums.IntEnum;
 
 /**
  * Created by Administrator on 2017/5/25.
  */
-public enum PasswordType  implements IntEnum<PasswordType> {
+public enum PasswordType implements IntEnum<PasswordType> {
 
     ADMINISTRATOR(0, "管理员密码"),
     DIGITAL(1, "数字密码"),//锁面板上按键输入的数字密码
