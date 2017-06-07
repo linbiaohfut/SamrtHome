@@ -10,12 +10,118 @@ CREATE TABLE `home` (
   PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8 COMMENT='家庭信息表';
 
+DROP TABLE IF EXISTS `product_type`;
+CREATE TABLE `product_type` (
+  `id` varchar(64) COLLATE utf8_bin NOT NULL COMMENT '产品类型表ID',
+  `name` varchar(45) COLLATE utf8_bin NOT NULL COMMENT '产品类型备注名',
+  `description` longtext COLLATE utf8_bin COMMENT '对该产品类型的详细描述',
+  `comp_code` int(11) NOT NULL COMMENT '程序代码里用于比较的code',
+  `remarks` varchar(255) DEFAULT NULL,
+  `create_date` datetime DEFAULT NULL,
+  `update_date` datetime DEFAULT NULL,
+  `status` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE (`comp_code`)#用于比较的code必须唯一
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='产品类型表';
+
+INSERT INTO `product_type` VALUES ('1', '智能网关', '智能网关产品', 0, '', '2016-11-20 21:51:56', '2016-11-20 21:51:59', 'NORMAL');
+INSERT INTO `product_type` VALUES ('2', '智能门锁', '智能门锁产品', 1, '', '2016-11-20 21:51:56', '2016-11-20 21:51:59', 'NORMAL');
+INSERT INTO `product_type` VALUES ('3', '智能门磁', '智能门磁产品', 2, '', '2016-11-20 21:51:56', '2016-11-20 21:51:59', 'NORMAL');
+INSERT INTO `product_type` VALUES ('4', '智能开关', '智能开关产品', 3, '', '2016-11-20 21:51:56', '2016-11-20 21:51:59', 'NORMAL');
+INSERT INTO `product_type` VALUES ('5', '智能摄像头', '智能摄像头产品', 4, '', '2016-11-20 21:51:56', '2016-11-20 21:51:59', 'NORMAL');
+INSERT INTO `product_type` VALUES ('6', '煤气报警器', '煤气报警器产品', 5, '', '2016-11-20 21:51:56', '2016-11-20 21:51:59', 'NORMAL');
+INSERT INTO `product_type` VALUES ('7', '甲醛报警器', '甲醛报警器产品', 6, '', '2016-11-20 21:51:56', '2016-11-20 21:51:59', 'NORMAL');
+INSERT INTO `product_type` VALUES ('8', '烟雾报警器', '烟雾报警器产品', 7, '', '2016-11-20 21:51:56', '2016-11-20 21:51:59', 'NORMAL');
+INSERT INTO `product_type` VALUES ('9', '红外转发器', '红外转发器产品', 8, '', '2016-11-20 21:51:56', '2016-11-20 21:51:59', 'NORMAL');
+INSERT INTO `product_type` VALUES ('10', '智能插座', '智能插座产品', 9, '', '2016-11-20 21:51:56', '2016-11-20 21:51:59', 'NORMAL');
+
+-- ----------------------------
+-- 产品表
+-- 一款产品类型可以多种不同型号(编号)的产品，如智能门锁有PS-1103-Z、PS-1115-Z、PS-1320-Z等不同型号的智能锁产品
+-- ----------------------------
+DROP TABLE IF EXISTS `product`;
+CREATE TABLE `product` (
+  `id` varchar(64) COLLATE utf8_bin NOT NULL COMMENT '产品表ID',
+  `product_type_id` varchar(64) COLLATE utf8_bin NOT NULL COMMENT '产品类型表ID',
+  `name` varchar(45) COLLATE utf8_bin DEFAULT NULL COMMENT '产品备注名',
+  `number` varchar(45) COLLATE utf8_bin DEFAULT NULL COMMENT '产品编号',
+  `description` longtext COLLATE utf8_bin COMMENT '对产品详细描述：规格等',
+  `remarks` varchar(255) DEFAULT NULL,
+  `create_date` datetime DEFAULT NULL,
+  `update_date` datetime DEFAULT NULL,
+  `status` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE (`number`)#产品编号唯一
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='产品表';
+INSERT INTO `product` VALUES ('1', '2', 'PS-1115-Z互联网指纹密码刷卡锁', 'PS-1115-Z','PS-1115-Z互联网指纹密码刷卡锁', '', '2016-11-20 21:51:56', '2016-11-20 21:51:59', 'NORMAL');
+INSERT INTO `product` VALUES ('2', '1', '智能公寓网关', 'PS-2110-Z','PS-2110-Z智能公寓网关', '', '2016-11-20 21:51:56', '2016-11-20 21:51:59', 'NORMAL');
+INSERT INTO `product` VALUES ('3', '2', 'PS-1201-Z互联网指纹密码锁', 'PS-1201-Z','PS-1201-Z互联网指纹密码锁', '', '2016-11-20 21:51:56', '2016-11-20 21:51:59', 'NORMAL');
+
+-- ----------------------------
+-- 功能表
+-- 每种类型的产品可以有各种功能
+-- ----------------------------
+DROP TABLE IF EXISTS `function`;
+CREATE TABLE `function` (
+  `id` varchar(64) COLLATE utf8_bin NOT NULL COMMENT '功能表ID',
+  `product_type_id` varchar(64) COLLATE utf8_bin NOT NULL COMMENT '产品类型表ID',
+  `name` varchar(45) COLLATE utf8_bin DEFAULT NULL COMMENT '功能名称',
+  `description` longtext COLLATE utf8_bin COMMENT '功能详细解释',
+  `comp_code` int(30) NOT NULL COMMENT '程序代码里用于比较的code',
+  `remarks` varchar(255) DEFAULT NULL,
+  `create_date` datetime DEFAULT NULL,
+  `update_date` datetime DEFAULT NULL,
+  `status` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE (`comp_code`)#用于比较的code必须唯一
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='功能表';
+
+INSERT INTO `function` VALUES ('1', '2', '数字密码开锁', '数字密码包括，长期密码和临时密码',1, '', '2016-11-20 21:51:56', '2016-11-20 21:51:59', 'NORMAL');
+INSERT INTO `function` VALUES ('2', '2', '指纹密码开锁', '可以设置某款型号的产品是否支持指纹密码开锁',2, '', '2016-11-20 21:51:56', '2016-11-20 21:51:59', 'NORMAL');
+INSERT INTO `function` VALUES ('3', '2', '卡片密码开锁', '可以设置某款型号的产品是否支持指纹密码开锁',3, '', '2016-11-20 21:51:56', '2016-11-20 21:51:59', 'NORMAL');
+INSERT INTO `function` VALUES ('4', '2', '劫持指纹开锁报警', '可以设置某款型号的产品是否支持指纹密码开锁',4, '', '2016-11-20 21:51:56', '2016-11-20 21:51:59', 'NORMAL');
+INSERT INTO `function` VALUES ('5', '2', '锁孔报警', '可以设置某款型号的产品是否支持锁孔报警，当锁孔被打开时产生报警事件',5, '', '2016-11-20 21:51:56', '2016-11-20 21:51:59', 'NORMAL');
+INSERT INTO `function` VALUES ('6', '2', '全指纹删除', '可以设置某款型号的产品是否支持全指纹删除',6, '', '2016-11-20 21:51:56', '2016-11-20 21:51:59', 'NORMAL');
+INSERT INTO `function` VALUES ('7', '2', '管理员密码开锁', '可以设置某款型号的产品是否支持管理员密码开锁',7, '', '2016-11-20 21:51:56', '2016-11-20 21:51:59', 'NORMAL');
+INSERT INTO `function` VALUES ('8', '2', '开锁提醒', '可以设置某款型号的产品是否支持开锁提醒',8, '', '2016-11-20 21:51:56', '2016-11-20 21:51:59', 'NORMAL');
+INSERT INTO `function` VALUES ('9', '2', '门铃', '可以设置某款型号的产品是否带门铃',9, '', '2016-11-20 21:51:56', '2016-11-20 21:51:59', 'NORMAL');
+INSERT INTO `function` VALUES ('10', '2', '门磁', '可以设置某款型号的产品是否带门磁',10, '', '2016-11-20 21:51:56', '2016-11-20 21:51:59', 'NORMAL');
+
+-- ----------------------------
+-- 产品能力集表
+-- 每种类型的产品所对应的功能集合，比如PS-1115-Z型号的产品支持数字密码开锁、指纹密码开锁、卡片密码开锁三个功能
+-- ----------------------------
+DROP TABLE IF EXISTS `product_function`;
+CREATE TABLE `product_function` (
+  `id` varchar(45) COLLATE utf8_bin NOT NULL COMMENT '产品功能关系表ID',
+  `product_id` varchar(45) COLLATE utf8_bin NOT NULL COMMENT '产品表ID',
+  `function_id` varchar(45) COLLATE utf8_bin NOT NULL COMMENT '功能表ID',
+  `remarks` varchar(255) DEFAULT NULL,
+  `create_date` datetime DEFAULT NULL,
+  `update_date` datetime DEFAULT NULL,
+  `status` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `product_function_key` (`function_id`,`product_id`)#一个设备只能有一个父节点设备
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='产品功能关系表';
+-- PS-1115-Z型号的产品支持数字密码开锁
+INSERT INTO `product_function` VALUES ('1', '1', '1', '', '2016-11-20 21:51:56', '2016-11-20 21:51:59', 'NORMAL');
+-- PS-1115-Z型号的产品支持指纹密码开锁
+INSERT INTO `product_function` VALUES ('2', '1', '2', '', '2016-11-20 21:51:56', '2016-11-20 21:51:59', 'NORMAL');
+-- PS-1115-Z型号的产品支持卡片密码开锁
+INSERT INTO `product_function` VALUES ('3', '1', '3','', '2016-11-20 21:51:56', '2016-11-20 21:51:59', 'NORMAL');
+
+
+
+-- ----------------------------
+-- 设备表
+-- 每种型号(编号)的产品可以生产很多台设备
+-- ----------------------------
 DROP TABLE IF EXISTS `device`;
 CREATE TABLE `device` (
   `id` varchar(64) NOT NULL COMMENT '设备id',
   `name` varchar(20) DEFAULT '未命名设备' COMMENT '设备名称',
   `picture` varchar(200)  DEFAULT '' COMMENT '设备图片',
-  `device_type` TINYINT   DEFAULT 0 COMMENT '设备类型：1	智能锁;2	智能门磁;3	智能开关;4	智能摄像头;5	煤气报警器;6	甲醛报警器;7	烟雾报警器;8	红外转发器;9	智能插座',
+  `product_id` varchar(64) NOT NULL  COMMENT '产品ID',
   `serial`  varchar(45)  DEFAULT NULL COMMENT '设备序列号',
   `soft_version` varchar(45) DEFAULT NULL COMMENT '软件版本号',
   `home_id`   varchar(64) DEFAULT '0' COMMENT '所属的家庭id',

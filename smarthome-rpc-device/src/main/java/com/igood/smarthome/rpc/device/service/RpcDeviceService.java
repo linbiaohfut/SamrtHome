@@ -52,11 +52,11 @@ public interface RpcDeviceService {
 
 
     /**
-     * 根据设备类型获取该类型的所有设备
-     * @param deviceType
+     * 根据产品类型ID获取该类型的所有设备
+     * @param productTypeId
      * @return
      */
-    Page<Device> getDevicesByType(DeviceType deviceType, int pageNum, int pageSize);
+    Page<Device> getDevicesByType(String productTypeId, int pageNum, int pageSize);
     /**
      * 更新设备名称
      * @param id

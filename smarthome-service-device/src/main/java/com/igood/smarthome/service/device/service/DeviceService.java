@@ -71,10 +71,10 @@ public class DeviceService implements RpcDeviceService {
 
 
     @Override
-    public Page<Device> getDevicesByType(DeviceType deviceType, int pageNum, int pageSize) {
+    public Page<Device> getDevicesByType(String productTypeId, int pageNum, int pageSize) {
 
         Device device = new Device();
-        device.setDeviceType(deviceType);
+        device.setProductTypeId(productTypeId);
         PageHelper.startPage(pageNum, pageSize);
         List<Device> devices = deviceDaoMapper.loadAll(device);
         PageInfo<Device> devicePageInfo = new PageInfo<>(devices);

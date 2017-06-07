@@ -22,6 +22,8 @@
         <module>smarthome-service-home</module>
         <module>smarthome-rpc-device</module>
         <module>smarthome-service-device</module>
+        <module>smarthome-rpc-product</module>
+        <module>smarthome-service-product</module>
 
     </modules>
 
@@ -130,6 +132,11 @@
                 <version>${project.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>smarthome-rpc-product</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
 
             <!-- Junit -->

@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.igood.smarthome.service.product.dao.ProductTypeDaoMapper">
+    <sql id="tableName">product_type</sql>
+
+    <resultMap type="ProductType" id="productTypeResultMap">
+        <id property="id" column="id" />
+        <result property="name" column="name" />
+        <result property="description" column="description" />
+        <result property="compCode" column="comp_code" />
+        <result property="remarks" column="remarks" />
+        <result property="createDate" column="create_date" />
+        <result property="updateDate" column="update_date" />
+        <result property="status" column="status" />
+    </resultMap>
+    <sql id="orderby1">
+        ORDER BY create_date DESC
+    </sql>
+    <sql id="orderby">
+    </sql>
+    <sql id="insertColumns">
+        id,name,description,comp_code,remarks,create_date,update_date,status
+    </sql>
+    <sql id="insertValue">
+        (#{id},#{name},#{description},#{compCode},
+         #{remarks},#{createDate},#{updateDate},#{status})
+    </sql>
+
+    <sql id="productTypeIf">
+        <if test="id != null and id != ''">id=#{id},</if>
+        <if test="name != null and name != ''">name=#{name},</if>
+        <if test="description != null and description != ''">description=#{description},</if>
+        <if test="comp_code != null and comp_code != ''">comp_code=#{compCode},</if>
+        <if test="remarks != null and remarks != ''">remarks=#{remarks},</if>
+        <if test="createDate != null and createDate != ''">create_date=#{createDate},</if>
+        <if test="updateDate != null and updateDate != ''">update_date=#{updateDate},</if>
+        <if test="status != null and status != ''">status=#{status,jdbcType=VARCHAR}</if>
+    </sql>
+
+    <sql id="productTypeSelector" >
+        select
+        id,name,description,comp_code
+        from
+        <include refid="tableName"/> AS pt
+    </sql>
+
+    <sql id="productTypeWhere">
+        <where>
+            <if test="id != null and id != ''">
+            id = #{id}
+            </if>
+            <if test="compCode != null and compCode != ''">
+                comp_code = #{compCode}
+            </if>
+            <if test="name != null and name != ''">
+                name = #{name}
+            </if>
+
+            <choose>
+                <when test="status != null and status !=''">
+                    AND status = #{status}
+                </when>
+                <otherwise>
+                    AND status != 'DELETE'
+                </otherwise>
+            </choose>
+        </where>
+    </sql>
+
+    <sql id="productTypeUpdate">
+        <trim prefix="SET" suffixOverrides=",">
+            <include refid="productTypeIf"/>
+        </trim>
+    </sql>
+
+    <sql id="productTypeWhereUpdate">
+        <where>
+            <if test="id != null and id != ''">
+                id = #{id}
+            </if>
+        </where>
+    </sql>
+
+    <!-- =================================================================== -->
+    <!-- 根据ID获取产品信息 -->
+    <select id="load" parameterType="ProductType" resultMap="productTypeResultMap">
+        <include refid="productTypeSelector"/>
+        <include refid="productTypeWhere"/>
+    </select>
+
+    <select id="loadAll" parameterType="ProductType" resultMap="productTypeResultMap">
+        <include refid="productTypeSelector"/>
+        <include refid="productTypeWhere"/>
+        <include refid="orderby1"/>
+    </select>
+
+    <!-- 更新 -->
+    <update id="update" parameterType="ProductType">
+        UPDATE <include refid="tableName"/>
+        <include refid="productTypeUpdate"/>
+        <include refid="productTypeWhereUpdate"/>
+    </update>
+
+    <!-- 插入 -->
+    <insert id="save" parameterType="ProductType">
+        INSERT INTO
+        <include refid="tableName"/>
+        (
+        <include refid="insertColumns"/>
+        )
+        VALUES
+        <include refid="insertValue"/>
+    </insert>
+
+
+    
+</mapper>

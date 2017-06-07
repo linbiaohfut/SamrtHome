@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.igood.smarthome.service.product.dao.ProductDaoMapper">
+    <sql id="tableName">product</sql>
+
+    <resultMap type="Product" id="productResultMap">
+        <id property="id" column="id" />
+        <result property="name" column="name" />
+        <result property="productTypeId" column="product_type_id" />
+        <result property="number" column="number" />
+        <result property="description" column="description" />
+        <result property="remarks" column="remarks" />
+        <result property="createDate" column="create_date" />
+        <result property="updateDate" column="update_date" />
+        <result property="status" column="status" />
+    </resultMap>
+    <sql id="orderby1">
+        ORDER BY create_date DESC
+    </sql>
+    <sql id="orderby">
+    </sql>
+    <sql id="insertColumns">
+        id,name,product_type_id,number,description,remarks,create_date,update_date,status
+    </sql>
+    <sql id="insertValue">
+        (#{id},#{name},#{productTypeId},#{number},#{description},
+         #{remarks},#{createDate},#{updateDate},#{status})
+    </sql>
+
+    <sql id="productIf">
+        <if test="id != null and id != ''">id=#{id},</if>
+        <if test="name != null and name != ''">name=#{name},</if>
+        <if test="productTypeId != null and productTypeId != ''">product_type_id=#{productTypeId},</if>
+        <if test="number != null and number != ''">number=#{number},</if>
+        <if test="description != null and description != ''">description=#{description},</if>
+        <if test="remarks != null and remarks != ''">remarks=#{remarks},</if>
+        <if test="createDate != null and createDate != ''">create_date=#{createDate},</if>
+        <if test="updateDate != null and updateDate != ''">update_date=#{updateDate},</if>
+        <if test="status != null and status != ''">status=#{status,jdbcType=VARCHAR}</if>
+    </sql>
+
+    <sql id="productSelector" >
+        select
+        id,name,product_type_id,number,description
+        from
+        <include refid="tableName"/> AS p
+    </sql>
+
+    <sql id="productWhere">
+        <where>
+            <if test="id != null and id != ''">
+                id = #{id}
+            </if>
+            <if test="productTypeId != null and productTypeId != ''">
+                product_type_id = #{productTypeId}
+            </if>
+            <if test="number != null and number != ''">
+                number = #{number}
+            </if>
+
+            <choose>
+                <when test="status != null and status !=''">
+                    AND status = #{status}
+                </when>
+                <otherwise>
+                    AND status != 'DELETE'
+                </otherwise>
+            </choose>
+        </where>
+    </sql>
+
+    <sql id="productUpdate">
+        <trim prefix="SET" suffixOverrides=",">
+            <include refid="productIf"/>
+        </trim>
+    </sql>
+
+    <sql id="productWhereUpdate">
+        <where>
+            <if test="id != null and id != ''">
+                id = #{id}
+            </if>
+        </where>
+    </sql>
+
+    <!-- =================================================================== -->
+    <!-- 根据ID获取产品信息 -->
+    <select id="load" parameterType="Product" resultMap="productResultMap">
+        <include refid="productSelector"/>
+        <include refid="productWhere"/>
+    </select>
+
+    <select id="loadAll" parameterType="Product" resultMap="productResultMap">
+        <include refid="productSelector"/>
+        <include refid="productWhere"/>
+        <include refid="orderby1"/>
+    </select>
+
+    <!-- 更新 -->
+    <update id="update" parameterType="Product">
+        UPDATE <include refid="tableName"/>
+        <include refid="productUpdate"/>
+        <include refid="productWhereUpdate"/>
+    </update>
+
+    <!-- 插入 -->
+    <insert id="save" parameterType="Product">
+        INSERT INTO
+        <include refid="tableName"/>
+        (
+        <include refid="insertColumns"/>
+        )
+        VALUES
+        <include refid="insertValue"/>
+    </insert>
+
+    <resultMap type="Product" id="productResultByTypeMap">
+        <id property="id" column="id" />
+        <result property="name" column="name" />
+        <result property="productTypeId" column="product_type_id" />
+        <result property="number" column="number" />
+        <result property="description" column="description" />
+    </resultMap>
+
+    <!--根据产品类型查询所有的该类型的所有产品-->
+    <select id="getProductsByType" resultMap="productResultByTypeMap">
+        select *
+        from <include refid="tableName"/> AS p
+        inner join product_type AS pt ON p.product_type_id=pt.id
+        <include refid="productWhere"/>
+        <include refid="orderby1"/>
+    </select>
+
+    <select id="getProductFunctions" resultMap="productResultByTypeMap">
+        select f.id,f.name,f.comp_code,f.description
+        from <include refid="tableName"/> AS p
+        inner join function AS f ON p.product_type_id=p.product_type_id
+        inner join product_function AS pf ON pf.product_id=p.id AND pf.function_id=f.id
+        <include refid="productWhere"/>
+    </select>
+
+
+</mapper>

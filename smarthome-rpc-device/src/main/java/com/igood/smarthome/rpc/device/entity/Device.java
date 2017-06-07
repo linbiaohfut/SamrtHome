@@ -16,13 +16,15 @@ import java.util.List;
 public class Device extends DataEntity<Device> {
     private String name;//设备名称
     private String picture;//设备图片
-    private DeviceType deviceType;//设备类型
+    private String productId;//产品ID
     private String serial;//设备序列号
     private String softVersion;//软件版本号
     private ConnectType connectType;//联网方式
     private String parentId;
     private String homeId;
+
     private List<Device> ChildList;//子设备列表
+    private String productTypeId;//产品类型ID
 
     public Device(){}
     public Device(String id){
@@ -44,12 +46,13 @@ public class Device extends DataEntity<Device> {
         this.picture = picture;
     }
 
-    public DeviceType getDeviceType() {
-        return deviceType;
+
+    public String getProductId() {
+        return productId;
     }
 
-    public void setDeviceType(DeviceType deviceType) {
-        this.deviceType = deviceType;
+    public void setProductId(String productId) {
+        this.productId = productId;
     }
 
     public String getSerial() {
@@ -100,13 +103,21 @@ public class Device extends DataEntity<Device> {
         this.homeId = homeId;
     }
 
+    public String getProductTypeId() {
+        return productTypeId;
+    }
+
+    public void setProductTypeId(String productTypeId) {
+        this.productTypeId = productTypeId;
+    }
+
     @Override
     public String toString() {
         return "Device{" +
                 "id='"+id+'\''+
                 ", name='" + name + '\'' +
                 ", picture='" + picture + '\'' +
-                ", deviceType=" + deviceType +
+                ", productId=" + productId +
                 ", serial='" + serial + '\'' +
                 ", softVersion='" + softVersion + '\'' +
                 ", connectType=" + connectType +
